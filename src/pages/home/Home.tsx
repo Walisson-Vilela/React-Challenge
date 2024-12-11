@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import Header from './pages/home/components/Header/Header';
-import Footer from './pages/home/components/Footer/Footer';
-import VisitList from './pages/home/components/VisitList/VisitList';
-import CreateModal from './pages/home/components/CreateModal/CreateModal';
+import Header from './components/Header/Header';
+import Footer from './components/Footer/Footer';
+import VisitList from './components/VisitList/VisitList';
+import CreateModal from './components/CreateModal/CreateModal';
+import styles from './home.module.css';
 
-const App: React.FC = () => {
+const Home: React.FC = () => {
     const [visits, setVisits] = useState<any[]>([]);
     const [isModalOpen, setModalOpen] = useState(false);
     const [editingVisit, setEditingVisit] = useState<any>(null);
@@ -56,4 +57,4 @@ const App: React.FC = () => {
     );
 };
 
-export default App;
+export default Home;
