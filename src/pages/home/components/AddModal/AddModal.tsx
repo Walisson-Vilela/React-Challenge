@@ -115,6 +115,8 @@ const AddModal: React.FC<CreateModalProps> = ({ isOpen, onClose, onSave, initial
     <Modal open={isOpen} onClose={onClose}>
       <Box sx={modalStyle}>
         <h2>{isEditing ? "Editar visita" : "Criar nova visita"}</h2>
+        
+        {/* CEP */}
         <TextField
           label="CEP"
           name="cep"
@@ -123,6 +125,8 @@ const AddModal: React.FC<CreateModalProps> = ({ isOpen, onClose, onSave, initial
           disabled={isLoading}
         />
         {isLoading && <CircularProgress size={24} style={{ alignSelf: "center" }} />}
+        
+        {/* Logradouro */}
         <TextField
           label="Logradouro"
           name="address"
@@ -130,6 +134,8 @@ const AddModal: React.FC<CreateModalProps> = ({ isOpen, onClose, onSave, initial
           onChange={handleChange}
           disabled={isLoading || !isAddressEditable}
         />
+        
+        {/* Número */}
         <TextField
           label="Número"
           name="number"
@@ -137,6 +143,8 @@ const AddModal: React.FC<CreateModalProps> = ({ isOpen, onClose, onSave, initial
           onChange={handleChange}
           type="number"
         />
+        
+        {/* Bairro */}
         <TextField
           label="Bairro"
           name="neighborhood"
@@ -144,27 +152,36 @@ const AddModal: React.FC<CreateModalProps> = ({ isOpen, onClose, onSave, initial
           onChange={handleChange}
           disabled={isLoading || !isNeighborhoodEditable}
         />
+        
+        {/* Cidade */}
         <TextField
           label="Cidade"
           name="city"
           value={formData.city}
           InputProps={{ readOnly: true }}
+          disabled={isLoading || !isAddressEditable}
         />
+        
+        {/* Estado */}
         <TextField
           label="Estado"
           name="uf"
           value={formData.uf}
           InputProps={{ readOnly: true }}
+          disabled={isLoading || !isAddressEditable}
         />
 
         <Box display="flex" justifyContent="space-between">
+          {/* Botão Cancelar */}
           <Button variant="outlined" onClick={onClose}>
             Cancelar
           </Button>
+          
+          {/* Botão Salvar */}
           <PrimaryButton
             text="Salvar"
             onClick={handleSubmit}
-            disabled={!isFormValid || isLoading}
+            disabled={isLoading || !isFormValid}
           />
         </Box>
       </Box>
