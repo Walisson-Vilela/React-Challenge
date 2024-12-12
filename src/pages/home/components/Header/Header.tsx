@@ -10,7 +10,7 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ pendingCount, openModal }) => {
   let counterColor = "blue";
-  if (pendingCount > 0 && pendingCount < 10) {
+  if (pendingCount > 3 && pendingCount < 10) {
     counterColor = "green";
   } else if (pendingCount >= 10) {
     counterColor = "red";
@@ -38,7 +38,6 @@ const Header: React.FC<HeaderProps> = ({ pendingCount, openModal }) => {
           >
             {pendingCount}
           </span>
-          {/* Botão estilizado redondo */}
           <div style={{ marginLeft: "1rem" }}>
             <AddButton onClick={openModal} />
           </div>

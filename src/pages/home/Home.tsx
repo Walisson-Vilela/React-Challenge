@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
 import VisitList from './components/VisitList/VisitList';
-import CreateModal from './components/AddModal/AddModal';
+import AddModal from './components/AddModal/AddModal';
 import styles from './home.module.css';
 
 const Home: React.FC = () => {
@@ -10,13 +10,25 @@ const Home: React.FC = () => {
     const [isModalOpen, setModalOpen] = useState(false);
     const [editingVisit, setEditingVisit] = useState<any>(null);
 
+    const handleOpenAddModal = () => {
+        setEditingVisit(null); 
+        setModalOpen(true); 
+    };
+
+    const handleOpenEditModal = (id: number) => {
+        const visitToEdit = visits.find(v => v.id === id);
+        setEditingVisit(visitToEdit); 
+        setModalOpen(true);
+    };
+
     const addOrEditVisit = (data: any) => {
         if (editingVisit) {
             setVisits(prev => prev.map(v => v.id === editingVisit.id ? { ...v, ...data } : v));
         } else {
             setVisits(prev => [...prev, { ...data, id: Date.now(), isPending: true, isSelected: false }]);
         }
-        setEditingVisit(null);
+        setEditingVisit(null); 
+        setModalOpen(false); 
     };
 
     const toggleSelection = (id: number) => {
@@ -30,25 +42,23 @@ const Home: React.FC = () => {
     return (
         <div className={styles.container}>
             <Header
-                pendingCount={visits.filter(v => v.isPending).length} 
-                openModal={() => setModalOpen(true)} 
+                pendingCount={visits.filter(v => v.isPending).length}
+                openModal={handleOpenAddModal}
             />
            
             <VisitList 
                 visits={visits} 
                 toggleSelection={toggleSelection} 
-                openEditModal={(id) => {
-                    setEditingVisit(visits.find(v => v.id === id));
-                    setModalOpen(true);
-                }}
+                openEditModal={handleOpenEditModal}
             />
    
             <Footer 
                 hasPendingSelected={visits.some(v => v.isSelected && v.isPending)} 
                 concludeSelected={concludeSelected} 
             />
+            
             {isModalOpen && (
-                <CreateModal 
+                <AddModal 
                     isOpen={isModalOpen} 
                     onClose={() => setModalOpen(false)} 
                     onSave={addOrEditVisit} 

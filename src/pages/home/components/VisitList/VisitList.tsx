@@ -56,19 +56,23 @@ const VisitList: React.FC<VisitListProps> = ({
                 onChange={() => toggleSelection(visit.id)}
               />
               <div className={styles.dataArea}>
-                <span className={styles.data}>
-                  <p>{visit.address},</p>
-                  <p>{visit.number},</p>
-                  <p>{visit.neighborhood},</p>
-                  <p>{visit.city},</p>
-                  <p>{visit.uf}.</p>
-                  <p>{visit.cep}</p>
-                </span>
+                <div className={styles.data}>
+                  <span style={{display: 'flex', flexDirection: 'row', width: '100%', gap: '0.5rem'}}>
+                    <p><strong>Logradouro:</strong> {visit.address},</p>
+                    <p><strong>Número:</strong> {visit.number} -</p>
+                    <p><strong>CEP:</strong> {visit.cep}</p>
+                  </span>
+                  <span style={{display: 'flex', flexDirection: 'row', width: '100%', gap:'0.5rem'}}>
+                    <p><strong>Bairro:</strong> {visit.neighborhood},</p>
+                    <p><strong>Cidade:</strong> {visit.city},</p>
+                    <p><strong>UF:</strong> {visit.uf}.</p>
+                  </span>
+                </div>
                 <div style={{ display: "flex", width: "100%" }}>
                   {visit.conclusionDate ? (
-                    <p>Concluida: {visit.conclusionDate}</p>
+                    <p style={{fontSize: '0.8rem'}}>Concluída: {visit.conclusionDate}</p>
                   ) : (
-                    <p>Última modificação:{visit.lastModified}</p>
+                    <p style={{fontSize: '0.8rem'}}>Última modificação:{visit.lastModified}</p>
                   )}
                 </div>
               </div>

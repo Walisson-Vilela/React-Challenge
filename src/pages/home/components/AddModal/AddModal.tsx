@@ -1,13 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Box, Button, Modal, TextField, CircularProgress } from "@mui/material";
 import axios from "axios";
 import PrimaryButton from "../../../../components/PrimaryButton/PrimaryButton";
 
+interface AddressData {
+  cep: string;
+  uf: string;
+  city: string;
+  neighborhood: string;
+  address: string;
+  number: string;
+}
+
 interface CreateModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (data: any) => void;
-  initialData?: any;
+  onSave: (data: AddressData) => void;
+  initialData?: AddressData;
 }
 
 const modalStyle = {
@@ -24,46 +33,56 @@ const modalStyle = {
   gap: 2,
 };
 
-const AddModal: React.FC<CreateModalProps> = ({
-  isOpen,
-  onClose,
-  onSave,
-  initialData,
-}) => {
-  const [formData, setFormData] = useState({
+const AddModal: React.FC<CreateModalProps> = ({ isOpen, onClose, onSave, initialData }) => {
+  const defaultFormData: AddressData = {
     cep: "",
     uf: "",
     city: "",
     neighborhood: "",
     address: "",
     number: "",
-  });
+  };
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [formData, setFormData] = useState<AddressData>(defaultFormData);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [isNeighborhoodEditable, setIsNeighborhoodEditable] = useState(false);
+  const [isAddressEditable, setIsAddressEditable] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      if (initialData) {
+        setIsEditing(true);
+        setFormData(initialData);
+      } else {
+        setIsEditing(false);
+        setFormData(defaultFormData);
+      }
+    }
+  }, [isOpen, initialData]);
 
   const handleCEPChange = async (cep: string) => {
     setFormData({
+      ...defaultFormData,
       cep,
-      uf: "",
-      city: "",
-      neighborhood: "",
-      address: "",
-      number: "",
     });
+    setIsNeighborhoodEditable(false);
+    setIsAddressEditable(false);
+
     if (cep.length === 8) {
       setIsLoading(true);
       try {
-        const { data } = await axios.get(
-          `https://viacep.com.br/ws/${cep}/json/`
-        );
-        setFormData({
+        const { data } = await axios.get(`https://viacep.com.br/ws/${cep}/json/`);
+        setFormData((prev) => ({
+          ...prev,
           cep,
           uf: data.uf || "",
           city: data.localidade || "",
           neighborhood: data.bairro || "",
           address: data.logradouro || "",
-          number: "",
-        });
+        }));
+        setIsNeighborhoodEditable(!data.bairro);
+        setIsAddressEditable(!data.logradouro);
       } catch (error) {
         console.error("Error fetching CEP", error);
       } finally {
@@ -77,15 +96,25 @@ const AddModal: React.FC<CreateModalProps> = ({
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const isFormValid =
+    formData.cep &&
+    formData.uf &&
+    formData.city &&
+    formData.neighborhood &&
+    formData.address &&
+    formData.number;
+
   const handleSubmit = () => {
-    onSave(formData);
-    onClose();
+    if (isFormValid) {
+      onSave(formData);
+      onClose();
+    }
   };
 
   return (
     <Modal open={isOpen} onClose={onClose}>
       <Box sx={modalStyle}>
-        <h2>{initialData ? "Edit Visit" : "Create Visit"}</h2>
+        <h2>{isEditing ? "Editar visita" : "Criar nova visita"}</h2>
         <TextField
           label="CEP"
           name="cep"
@@ -93,15 +122,13 @@ const AddModal: React.FC<CreateModalProps> = ({
           onChange={(e) => handleCEPChange(e.target.value)}
           disabled={isLoading}
         />
-        {isLoading && (
-          <CircularProgress size={24} style={{ alignSelf: "center" }} />
-        )}
+        {isLoading && <CircularProgress size={24} style={{ alignSelf: "center" }} />}
         <TextField
           label="Logradouro"
           name="address"
           value={formData.address}
           onChange={handleChange}
-          disabled={isLoading}
+          disabled={isLoading || !isAddressEditable}
         />
         <TextField
           label="Número"
@@ -115,9 +142,8 @@ const AddModal: React.FC<CreateModalProps> = ({
           name="neighborhood"
           value={formData.neighborhood}
           onChange={handleChange}
-          disabled={isLoading}
+          disabled={isLoading || !isNeighborhoodEditable}
         />
-
         <TextField
           label="Cidade"
           name="city"
@@ -135,7 +161,11 @@ const AddModal: React.FC<CreateModalProps> = ({
           <Button variant="outlined" onClick={onClose}>
             Cancelar
           </Button>
-          <PrimaryButton text="Salvar" onClick={handleSubmit} disabled={false} />
+          <PrimaryButton
+            text="Salvar"
+            onClick={handleSubmit}
+            disabled={!isFormValid || isLoading}
+          />
         </Box>
       </Box>
     </Modal>
