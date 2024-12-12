@@ -23,13 +23,31 @@ const Home: React.FC = () => {
 
     const addOrEditVisit = (data: any) => {
         if (editingVisit) {
-            setVisits(prev => prev.map(v => v.id === editingVisit.id ? { ...v, ...data } : v));
+            // Editando uma visita existente
+            setVisits(prev =>
+                prev.map(v =>
+                    v.id === editingVisit.id
+                        ? { ...v, ...data, lastModified: new Date().toISOString() }
+                        : v
+                )
+            );
         } else {
-            setVisits(prev => [...prev, { ...data, id: Date.now(), isPending: true, isSelected: false }]);
+            // Adicionando uma nova visita
+            setVisits(prev => [
+                ...prev,
+                {
+                    ...data,
+                    id: Date.now(),
+                    isPending: true,
+                    isSelected: false,
+                    lastModified: new Date().toISOString(), // Define a data de criação como última modificação inicial
+                },
+            ]);
         }
-        setEditingVisit(null); 
-        setModalOpen(false); 
+        setEditingVisit(null);
+        setModalOpen(false);
     };
+    
 
     const toggleSelection = (id: number) => {
         setVisits(prev => prev.map(v => v.id === id ? { ...v, isSelected: !v.isSelected } : v));
