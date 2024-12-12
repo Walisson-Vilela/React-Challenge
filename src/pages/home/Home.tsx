@@ -28,7 +28,7 @@ const Home: React.FC = () => {
     };
 
     return (
-        <div>
+        <div className={styles.container}>
             <Header
                 pendingCount={visits.filter(v => v.isPending).length} 
                 openModal={() => setModalOpen(true)} 
