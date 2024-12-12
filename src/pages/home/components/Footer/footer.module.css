@@ -1,0 +1,11 @@
+.container {
+    position: fixed; /* Fixa o footer na parte inferior */
+    bottom: 0; /* Posiciona o footer na borda inferior */
+    left: 0; /* Garante que ele inicie na extremidade esquerda */
+    right: 0; /* Garante que ele ocupe toda a largura */
+    z-index: 1000; /* Garante que o footer fique acima de outros elementos */
+    padding: 1rem;
+    border-top: 1px solid #ccc;
+    background: #fff; /* Define um fundo branco para contraste */
+    text-align: right;
+  }

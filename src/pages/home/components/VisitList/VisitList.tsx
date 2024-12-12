@@ -58,7 +58,7 @@ const VisitList: React.FC<VisitListProps> = ({
                   <p>{visit.number},</p>
                   <p>{visit.neighborhood},</p>
                   <p>{visit.city},</p>
-                  <p>{visit.uf}</p>
+                  <p>{visit.uf}.</p>
                   <p>{visit.cep}</p>
                 </span>
                 <div style={{display: 'flex', width: '100%' }}>

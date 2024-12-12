@@ -33,6 +33,7 @@ const Home: React.FC = () => {
                 pendingCount={visits.filter(v => v.isPending).length} 
                 openModal={() => setModalOpen(true)} 
             />
+           
             <VisitList 
                 visits={visits} 
                 toggleSelection={toggleSelection} 
@@ -41,6 +42,7 @@ const Home: React.FC = () => {
                     setModalOpen(true);
                 }}
             />
+   
             <Footer 
                 hasPendingSelected={visits.some(v => v.isSelected && v.isPending)} 
                 concludeSelected={concludeSelected} 
