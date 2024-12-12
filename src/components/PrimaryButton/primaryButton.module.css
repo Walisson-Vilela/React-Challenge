@@ -1,7 +1,4 @@
-.display {
-    background: var(--primaryColor);
-    color: #fff;
-    border: none;
+.button {
     border-radius: 5px;
     cursor: pointer;
    padding: 0 1.5rem;
@@ -14,17 +11,35 @@
     transition: transform 0.2s, box-shadow 0.2s;
   }
   
-  .display:hover {
-    background: var(--hoverColor);
-    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3), -2px -2px 4px rgba(255, 255, 255, 0.7);
-  }
   
-  .display:active {
+  .button:active {
     transform: scale(0.95);
     box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.2), inset -2px -2px 4px rgba(255, 255, 255, 0.5);
   }
   
-  .display:focus {
+  .button:focus {
     outline: none;
   }
+
+  .default {
+    background: var(--primaryColor);
+    color: #fff;
+    border: none;
+  }
+
+  .hovered {
+    background-color: var(--hoverColor);
+    color: #fff;
+    border: none;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3), -2px -2px 4px rgba(255, 255, 255, 0.7);
+  }
+
+  .disabled {
+    background-color: #cbd5e0; /* gray-400 */
+    outline: none;
+    border: none;
+    color: rgb(100, 100, 100);
+    cursor: not-allowed;
+  }
+  
   

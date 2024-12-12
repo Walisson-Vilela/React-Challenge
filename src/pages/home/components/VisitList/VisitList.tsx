@@ -1,5 +1,6 @@
 import React from "react";
 import styles from "./visitList.module.css";
+import PrimaryButton from "../../../../components/PrimaryButton/PrimaryButton";
 
 interface Visit {
   id: number;
@@ -73,12 +74,8 @@ const VisitList: React.FC<VisitListProps> = ({
                   )}
                 </div>
               </div>
-            <button
-              onClick={() => openEditModal(visit.id)}
-              disabled={!visit.isPending}
-            >
-              Editar
-            </button>
+              <PrimaryButton text="Editar" onClick={() => openEditModal(visit.id)} disabled={!visit.isPending} />
+           
           </div>
             </div>
         </div>

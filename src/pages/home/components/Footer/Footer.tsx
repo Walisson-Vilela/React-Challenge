@@ -1,21 +1,23 @@
-import React from 'react';
-import styles from './footer.module.css';
+import React from "react";
+import styles from "./footer.module.css";
+import PrimaryButton from "../../../../components/PrimaryButton/PrimaryButton";
 
 interface FooterProps {
   hasPendingSelected: boolean;
   concludeSelected: () => void;
 }
 
-const Footer: React.FC<FooterProps> = ({ hasPendingSelected, concludeSelected }) => {
+const Footer: React.FC<FooterProps> = ({
+  hasPendingSelected,
+  concludeSelected,
+}) => {
   return (
     <footer className={styles.container}>
-      <button
+      <PrimaryButton
+        text=" Concluir todas as visitas selecionadas"
         onClick={concludeSelected}
         disabled={!hasPendingSelected}
-        className={styles.button}
-      >
-        Conclude Selected Visits
-      </button>
+      />
     </footer>
   );
 };

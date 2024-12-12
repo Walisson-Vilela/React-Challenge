@@ -6,7 +6,8 @@
   width: 100vw;
   gap: 1.5rem;
   background: #f8f8f8;
-  padding-top: 8rem;
+  margin-top: 5rem;
+  padding-bottom: 10rem;
   overflow-y: auto;
 }
 

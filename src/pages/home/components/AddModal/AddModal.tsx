@@ -133,9 +133,9 @@ const AddModal: React.FC<CreateModalProps> = ({
 
         <Box display="flex" justifyContent="space-between">
           <Button variant="outlined" onClick={onClose}>
-            Cancel
+            Cancelar
           </Button>
-          <PrimaryButton text="Salvar" textLabel="Salvar" onClick={handleSubmit} />
+          <PrimaryButton text="Salvar" onClick={handleSubmit} disabled={false} />
         </Box>
       </Box>
     </Modal>

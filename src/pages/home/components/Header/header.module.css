@@ -1,17 +1,17 @@
 .container {
-    position: fixed; 
-    top: 0;
-    left: 0; 
-    right: 0; 
-    z-index: 1000; 
-    display: flex;
-    justify-content: space-between;
-    padding: 1rem 3rem;
-    align-items: center;
-    border-bottom: 1px solid #ccc;
-    background: #fff;
-  }
-  
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: space-between;
+  height: 5rem;
+  padding: 1rem 3rem;
+  align-items: center;
+  border-bottom: 1px solid #ccc;
+  background: #fff;
+}
 
 .logo {
   width: 4rem;
