@@ -33,7 +33,12 @@ const modalStyle = {
   gap: 2,
 };
 
-const AddModal: React.FC<CreateModalProps> = ({ isOpen, onClose, onSave, initialData }) => {
+const AddModal: React.FC<CreateModalProps> = ({
+  isOpen,
+  onClose,
+  onSave,
+  initialData,
+}) => {
   const defaultFormData: AddressData = {
     cep: "",
     uf: "",
@@ -72,7 +77,9 @@ const AddModal: React.FC<CreateModalProps> = ({ isOpen, onClose, onSave, initial
     if (cep.length === 8) {
       setIsLoading(true);
       try {
-        const { data } = await axios.get(`https://viacep.com.br/ws/${cep}/json/`);
+        const { data } = await axios.get(
+          `https://viacep.com.br/ws/${cep}/json/`
+        );
         setFormData((prev) => ({
           ...prev,
           cep,
@@ -115,60 +122,78 @@ const AddModal: React.FC<CreateModalProps> = ({ isOpen, onClose, onSave, initial
     <Modal open={isOpen} onClose={onClose}>
       <Box sx={modalStyle}>
         <h2>{isEditing ? "Editar visita" : "Criar nova visita"}</h2>
-        
         {/* CEP */}
-        <TextField
-          label="CEP"
+        <label htmlFor="cep">CEP</label>
+        <input
+          type="text"
+          id="cep"
           name="cep"
           value={formData.cep}
           onChange={(e) => handleCEPChange(e.target.value)}
           disabled={isLoading}
+          placeholder="Digite o CEP"
         />
-        {isLoading && <CircularProgress size={24} style={{ alignSelf: "center" }} />}
-        
+        {isLoading && (
+          <CircularProgress size={24} style={{ alignSelf: "center" }} />
+        )}
+
         {/* Logradouro */}
-        <TextField
-          label="Logradouro"
+        <label htmlFor="address">Logradouro</label>
+        <input
+          type="text"
+          id="address"
           name="address"
           value={formData.address}
           onChange={handleChange}
           disabled={isLoading || !isAddressEditable}
+          placeholder="Digite o logradouro"
         />
-        
+
         {/* Número */}
-        <TextField
-          label="Número"
+        <label htmlFor="number">Número</label>
+        <input
+          type="number"
+          id="number"
           name="number"
           value={formData.number}
           onChange={handleChange}
-          type="number"
+          placeholder="Digite o número"
         />
-        
+
         {/* Bairro */}
-        <TextField
-          label="Bairro"
+        <label htmlFor="neighborhood">Bairro</label>
+        <input
+          type="text"
+          id="neighborhood"
           name="neighborhood"
           value={formData.neighborhood}
           onChange={handleChange}
           disabled={isLoading || !isNeighborhoodEditable}
+          placeholder="Digite o bairro"
         />
-        
+
         {/* Cidade */}
-        <TextField
-          label="Cidade"
+        <label htmlFor="city">Cidade</label>
+        <input
+          type="text"
+          id="city"
           name="city"
           value={formData.city}
-          InputProps={{ readOnly: true }}
+          readOnly
           disabled={isLoading || !isAddressEditable}
+          placeholder="Digite a cidade"
         />
-        
+
         {/* Estado */}
-        <TextField
-          label="Estado"
+        <label htmlFor="uf">Estado</label>
+        <input
+          type="text"
+          id="uf"
           name="uf"
           value={formData.uf}
-          InputProps={{ readOnly: true }}
+          readOnly
           disabled={isLoading || !isAddressEditable}
+          placeholder="Digite o estado"
         />
 
         <Box display="flex" justifyContent="space-between">
@@ -176,7 +201,7 @@ const AddModal: React.FC<CreateModalProps> = ({ isOpen, onClose, onSave, initial
           <Button variant="outlined" onClick={onClose}>
             Cancelar
           </Button>
-          
+
           {/* Botão Salvar */}
           <PrimaryButton
             text="Salvar"

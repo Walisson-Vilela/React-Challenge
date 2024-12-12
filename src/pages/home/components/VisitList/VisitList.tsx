@@ -5,6 +5,7 @@ import PrimaryButton from "../../../../components/PrimaryButton/PrimaryButton";
 import EditIcon from "../../../../images/edit.svg";
 import EditIconDisabled from "../../../../images/editDisabled.svg";
 import styles from "./visitList.module.css";
+import { Checkbox } from "@mui/material";
 
 interface Visit {
   id: number;
@@ -31,7 +32,7 @@ const formatDate = (dateString: string | undefined) => {
   if (!dateString) return "";
 
   const date = new Date(dateString);
-  
+
   // Formatar a data e hora no formato: Ter. 28/08/2023 - 08:00
   return format(date, "EEE dd/MM/yyyy - HH:mm", { locale: ptBR });
 };
@@ -61,30 +62,60 @@ const VisitList: React.FC<VisitListProps> = ({
             }}
           >
             <div className={styles.innerContainer}>
-              <input
-                style={{ marginRight: "1rem" }}
-                type="checkbox"
+              <Checkbox
                 checked={visit.isSelected}
                 onChange={() => toggleSelection(visit.id)}
+                style={{ marginRight: "1rem" }}
+                color="primary"
               />
               <div className={styles.dataArea}>
                 <div className={styles.data}>
-                  <span style={{display: 'flex', flexDirection: 'row', width: '100%', gap: '0.5rem'}}>
-                    <p><strong>Logradouro:</strong> {visit.address},</p>
-                    <p><strong>Número:</strong> {visit.number} -</p>
-                    <p><strong>CEP:</strong> {visit.cep}</p>
+                  <span
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      width: "100%",
+                      gap: "0.5rem",
+                    }}
+                  >
+                    <p>
+                      <strong>Logradouro:</strong> {visit.address},
+                    </p>
+                    <p>
+                      <strong>Número:</strong> {visit.number} -
+                    </p>
+                    <p>
+                      <strong>CEP:</strong> {visit.cep}
+                    </p>
                   </span>
-                  <span style={{display: 'flex', flexDirection: 'row', width: '100%', gap:'0.5rem'}}>
-                    <p><strong>Bairro:</strong> {visit.neighborhood},</p>
-                    <p><strong>Cidade:</strong> {visit.city},</p>
-                    <p><strong>UF:</strong> {visit.uf}.</p>
+                  <span
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      width: "100%",
+                      gap: "0.5rem",
+                    }}
+                  >
+                    <p>
+                      <strong>Bairro:</strong> {visit.neighborhood},
+                    </p>
+                    <p>
+                      <strong>Cidade:</strong> {visit.city},
+                    </p>
+                    <p>
+                      <strong>UF:</strong> {visit.uf}.
+                    </p>
                   </span>
                 </div>
                 <div style={{ display: "flex", width: "100%" }}>
                   {visit.conclusionDate ? (
-                    <p style={{fontSize: '0.8rem'}}>Concluída: {formatDate(visit.conclusionDate)}</p>
+                    <p style={{ fontSize: "0.8rem" }}>
+                      Concluída: {formatDate(visit.conclusionDate)}
+                    </p>
                   ) : (
-                    <p style={{fontSize: '0.8rem'}}>Última modificação: {formatDate(visit.lastModified)}</p>
+                    <p style={{ fontSize: "0.8rem" }}>
+                      Última modificação: {formatDate(visit.lastModified)}
+                    </p>
                   )}
                 </div>
               </div>
