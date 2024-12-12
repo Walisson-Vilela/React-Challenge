@@ -1,6 +1,8 @@
 import React from "react";
-import styles from "./visitList.module.css";
 import PrimaryButton from "../../../../components/PrimaryButton/PrimaryButton";
+import EditIcon from "../../../../images/edit.svg";
+import EditIconDisabled from "../../../../images/editDisabled.svg";
+import styles from "./visitList.module.css";
 
 interface Visit {
   id: number;
@@ -62,22 +64,31 @@ const VisitList: React.FC<VisitListProps> = ({
                   <p>{visit.uf}.</p>
                   <p>{visit.cep}</p>
                 </span>
-                <div style={{display: 'flex', width: '100%' }}>
+                <div style={{ display: "flex", width: "100%" }}>
                   {visit.conclusionDate ? (
-                    <p>
-                      Concluida: {visit.conclusionDate}
-                    </p>
+                    <p>Concluida: {visit.conclusionDate}</p>
                   ) : (
-                    <p >
-                      Última modificação:{visit.lastModified}
-                    </p>
+                    <p>Última modificação:{visit.lastModified}</p>
                   )}
                 </div>
               </div>
-              <PrimaryButton text="Editar" onClick={() => openEditModal(visit.id)} disabled={!visit.isPending} />
-           
-          </div>
+              <button
+                style={{
+                  background: "none",
+                  border: "none",
+                  cursor: visit.isPending ? "pointer" : "default",
+                  paddingRight: "1rem",
+                }}
+                onClick={() => openEditModal(visit.id)}
+                disabled={!visit.isPending}
+              >
+                <img
+                  src={!visit.isPending ? EditIconDisabled : EditIcon}
+                  alt="Editar"
+                />
+              </button>
             </div>
+          </div>
         </div>
       ))}
     </section>
