@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
 import VisitList from './components/VisitList/VisitList';
-import CreateModal from './components/CreateModal/CreateModal';
+import CreateModal from './components/AddModal/AddModal';
 import styles from './home.module.css';
 
 const Home: React.FC = () => {

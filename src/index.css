@@ -1,13 +1,77 @@
-body {
+* {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+@font-face {
+  font-family: "CustomFont";
+  src: url("../src/fonts/Montserrat/static/Montserrat-Medium.ttf")
+    format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "LogoFont";
+  src: url("../src/fonts/Montserrat/static/Montserrat-Light.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Black900";
+  src: url("../src/fonts/Montserrat/static/Montserrat-Black.ttf") format("truetype");
+}
+/* Variáveis Globais */
+:root {
+  /* Tema Claro */
+  --primaryColor: #0874b7;
+  --secondaryColor: rgba(255, 141, 1, 1);
+  --textColor: #1e477e;
+  --hoverColor: #1e477e;
+
+  /* Tema Escuro */
+  --darkPrimaryColor: #ffffff;
+  --darkSecondaryColor: #ffba08;
+  --darkBackgroundColor: #333333;
+  --darkTextColor: rgba(255, 255, 255, 0.87);
+  --darkBorderColor: #333333;
+  --darkButtonBackground: #414141;
+  --darkHoverColor: rgba(255, 141, 1, 1);
+
+  /* Fontes e sombras */
+  --fontFamily: "CustomFont", sans-serif;
+  --boxShadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+body {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  font-family: var(--fontFamily);
+  background-color: var(--backgroundColor);
+  color: var(--textColor);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+a {
+  color: var(--primaryColor);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--secondaryColor);
+}
+
+/* Tema Escuro */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --primaryColor: var(--darkPrimaryColor);
+    --secondaryColor: var(--darkSecondaryColor);
+    --backgroundColor: var(--darkBackgroundColor);
+    --textColor: var(--darkTextColor);
+    --borderColor: var(--darkBorderColor);
+    --buttonBackground: var(--darkButtonBackground);
+    --hoverColor: var(--darkHoverColor);
+  }
 }

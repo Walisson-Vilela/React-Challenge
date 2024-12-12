@@ -1,0 +1,22 @@
+.container {
+    padding: 1rem 3rem;
+  }
+  
+  .cardDisplay {
+    margin-bottom: 1rem;
+    border: 1px solid #ccc;
+    background: #fff;
+    display: flex;
+    min-height: 7rem;
+    align-items: stretch;  /* Adicione esta linha */
+  }
+  
+  .statusBar {
+    width: 1rem;
+    height: auto;  /* Mude para 'auto' para se ajustar à altura do conteúdo do pai */
+  }
+
+  .innerContainer {
+    padding: 1rem;
+  }
+  
