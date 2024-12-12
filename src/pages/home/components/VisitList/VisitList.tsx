@@ -1,4 +1,6 @@
 import React from "react";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 import PrimaryButton from "../../../../components/PrimaryButton/PrimaryButton";
 import EditIcon from "../../../../images/edit.svg";
 import EditIconDisabled from "../../../../images/editDisabled.svg";
@@ -23,6 +25,16 @@ interface VisitListProps {
   toggleSelection: (id: number) => void;
   openEditModal: (id: number) => void;
 }
+
+// Função para formatar a data no formato desejado
+const formatDate = (dateString: string | undefined) => {
+  if (!dateString) return "";
+
+  const date = new Date(dateString);
+  
+  // Formatar a data e hora no formato: Ter. 28/08/2023 - 08:00
+  return format(date, "EEE dd/MM/yyyy - HH:mm", { locale: ptBR });
+};
 
 const VisitList: React.FC<VisitListProps> = ({
   visits,
@@ -70,9 +82,9 @@ const VisitList: React.FC<VisitListProps> = ({
                 </div>
                 <div style={{ display: "flex", width: "100%" }}>
                   {visit.conclusionDate ? (
-                    <p style={{fontSize: '0.8rem'}}>Concluída: {visit.conclusionDate}</p>
+                    <p style={{fontSize: '0.8rem'}}>Concluída: {formatDate(visit.conclusionDate)}</p>
                   ) : (
-                    <p style={{fontSize: '0.8rem'}}>Última modificação:{visit.lastModified}</p>
+                    <p style={{fontSize: '0.8rem'}}>Última modificação: {formatDate(visit.lastModified)}</p>
                   )}
                 </div>
               </div>
