@@ -44,11 +44,12 @@ const AddModal: React.FC<CreateModalProps> = ({
     control,
     handleSubmit,
     setValue,
-    formState: { isValid, isSubmitting },
+    formState: { isValid, isSubmitting, errors, touchedFields },
     reset,
     getValues,
+    trigger, // Adicionando trigger para revalidar os campos manualmente
   } = useForm<AddressData>({
-    mode: "onBlur",
+    mode: "onChange", // Validação enquanto o usuário digita
     defaultValues: {
       cep: "",
       uf: "",
@@ -62,7 +63,7 @@ const AddModal: React.FC<CreateModalProps> = ({
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isNeighborhoodEditable, setIsNeighborhoodEditable] = useState(false);
   const [isAddressEditable, setIsAddressEditable] = useState(false);
-  const [isNumberEditable, setIsNumberEditable] = useState(false); // Novo estado para o campo número
+  const [isNumberEditable, setIsNumberEditable] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
@@ -82,7 +83,6 @@ const AddModal: React.FC<CreateModalProps> = ({
   }, [isOpen, initialData, reset]);
 
   const handleCEPChange = async (cep: string) => {
-    // Limpar os campos de bairro, logradouro, cidade e estado ao alterar o CEP
     setValue("cep", cep);
     setValue("uf", "");
     setValue("city", "");
@@ -90,11 +90,9 @@ const AddModal: React.FC<CreateModalProps> = ({
     setValue("address", "");
     setValue("number", "");
 
-    // Desabilitar os campos de bairro e logradouro
     setIsNeighborhoodEditable(false);
     setIsAddressEditable(false);
 
-    // Verificar se o CEP tem 8 caracteres
     if (cep.length === 8) {
       setIsLoading(true);
       try {
@@ -106,7 +104,6 @@ const AddModal: React.FC<CreateModalProps> = ({
         setValue("neighborhood", data.bairro || "");
         setValue("address", data.logradouro || "");
 
-        // Se o bairro ou logradouro não foram retornados, habilita os campos para edição
         setIsNeighborhoodEditable(!data.bairro);
         setIsAddressEditable(!data.logradouro);
       } catch (error) {
@@ -116,8 +113,10 @@ const AddModal: React.FC<CreateModalProps> = ({
       }
     }
 
-    // Habilitar o campo número apenas se o CEP for preenchido
     setIsNumberEditable(cep.length === 8);
+    // Revalidando após a alteração do CEP
+    trigger("cep");
+    trigger("number");
   };
 
   const onSubmit = (data: AddressData) => {
@@ -129,11 +128,22 @@ const AddModal: React.FC<CreateModalProps> = ({
     <Modal open={isOpen} onClose={onClose}>
       <Box sx={modalStyle}>
         <h2>{initialData ? "Editar visita" : "Criar nova visita"}</h2>
-        {/* CEP */}
-        <label htmlFor="cep">CEP</label>
+
+        {/* CEP (obrigatório) */}
+        <label htmlFor="cep">CEP
+
+        {errors.number && (
+            <span
+              style={{ color: "red", fontSize: "0.6rem", marginLeft: '1rem' }}
+            >
+              {errors.number.message}
+            </span>
+          )}
+        </label>
         <Controller
           name="cep"
           control={control}
+          rules={{ required: "CEP é obrigatório" }} // Tornando o campo obrigatório
           render={({ field }) => (
             <input
               {...field}
@@ -145,8 +155,6 @@ const AddModal: React.FC<CreateModalProps> = ({
             />
           )}
         />
-        {isLoading && <CircularProgress size={24} style={{ alignSelf: "center" }} />}
-
         {/* Logradouro */}
         <label htmlFor="address">Logradouro</label>
         <Controller
@@ -163,11 +171,21 @@ const AddModal: React.FC<CreateModalProps> = ({
           )}
         />
 
-        {/* Número */}
-        <label htmlFor="number">Número</label>
+        {/* Número (obrigatório, se vazio ao tentar salvar) */}
+        <label htmlFor="number">
+          Número
+          {errors.number && (
+            <span
+              style={{ color: "red", fontSize: "0.6rem", marginLeft: '1rem' }}
+            >
+              {errors.number.message}
+            </span>
+          )}
+        </label>
         <Controller
           name="number"
           control={control}
+          rules={{ required: "    Número é obrigatório" }} // Adicionando a validação do campo número
           render={({ field }) => (
             <input
               {...field}
@@ -201,7 +219,14 @@ const AddModal: React.FC<CreateModalProps> = ({
           name="city"
           control={control}
           render={({ field }) => (
-            <input {...field} type="text" id="city" readOnly disabled={isLoading || !isAddressEditable} placeholder="Digite a cidade" />
+            <input
+              {...field}
+              type="text"
+              id="city"
+              readOnly
+              disabled={isLoading || !isAddressEditable}
+              placeholder="Digite a cidade"
+            />
           )}
         />
 
@@ -211,7 +236,14 @@ const AddModal: React.FC<CreateModalProps> = ({
           name="uf"
           control={control}
           render={({ field }) => (
-            <input {...field} type="text" id="uf" readOnly disabled={isLoading || !isAddressEditable} placeholder="Digite o estado" />
+            <input
+              {...field}
+              type="text"
+              id="uf"
+              readOnly
+              disabled={isLoading || !isAddressEditable}
+              placeholder="Digite o estado"
+            />
           )}
         />
 
@@ -225,7 +257,12 @@ const AddModal: React.FC<CreateModalProps> = ({
           <PrimaryButton
             text="Salvar"
             onClick={handleSubmit(onSubmit)}
-            disabled={isLoading || !isValid || isSubmitting || !Object.values(getValues()).every(val => val !== '')}
+            disabled={
+              isLoading ||
+              !isValid ||
+              isSubmitting ||
+              Object.keys(errors).length > 0
+            }
           />
         </Box>
       </Box>
