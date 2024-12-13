@@ -1,6 +1,7 @@
 import React from "react";
 import styles from "./footer.module.css";
 import PrimaryButton from "../../../../components/PrimaryButton/PrimaryButton";
+import PaginationRounded from "../../../../components/Pagination/Pagination";
 
 interface FooterProps {
   hasPendingSelected: boolean;
@@ -18,6 +19,7 @@ const Footer: React.FC<FooterProps> = ({
         onClick={concludeSelected}
         disabled={!hasPendingSelected}
       />
+      <PaginationRounded />
     </footer>
   );
 };
