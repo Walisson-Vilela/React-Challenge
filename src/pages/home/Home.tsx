@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import Header from './components/Header/Header';
-import Footer from './components/Footer/Footer';
-import VisitList from './components/VisitList/VisitList';
-import AddModal from './components/AddModal/AddModal';
-import styles from './home.module.css';
+import React, { useState, useEffect } from "react";
+import Header from "./components/Header/Header";
+import Footer from "./components/Footer/Footer";
+import VisitList from "./components/VisitList/VisitList";
+import AddModal from "./components/AddModal/AddModal";
+import styles from "./home.module.css";
 
 const Home: React.FC = () => {
   const [visits, setVisits] = useState<any[]>([]);
@@ -15,7 +15,7 @@ const Home: React.FC = () => {
 
   // Carregar as visitas do localStorage ao montar o componente
   useEffect(() => {
-    const savedVisits = localStorage.getItem('visits');
+    const savedVisits = localStorage.getItem("visits");
     if (savedVisits) {
       setVisits(JSON.parse(savedVisits));
     }
@@ -24,7 +24,7 @@ const Home: React.FC = () => {
   // Salvar visitas no localStorage sempre que a lista for alterada
   useEffect(() => {
     if (visits.length > 0) {
-      localStorage.setItem('visits', JSON.stringify(visits));
+      localStorage.setItem("visits", JSON.stringify(visits));
     }
   }, [visits]);
 
@@ -34,7 +34,10 @@ const Home: React.FC = () => {
   const currentVisits = visits.slice(indexOfFirstVisit, indexOfLastVisit);
 
   // Mudar a página
-  const handleChangePage = (event: React.ChangeEvent<unknown>, value: number) => {
+  const handleChangePage = (
+    event: React.ChangeEvent<unknown>,
+    value: number
+  ) => {
     setCurrentPage(value);
   };
 
@@ -44,22 +47,22 @@ const Home: React.FC = () => {
   };
 
   const handleOpenEditModal = (id: number) => {
-    const visitToEdit = visits.find(v => v.id === id);
+    const visitToEdit = visits.find((v) => v.id === id);
     setEditingVisit(visitToEdit);
     setModalOpen(true);
   };
 
   const addOrEditVisit = (data: any) => {
     if (editingVisit) {
-      setVisits(prev =>
-        prev.map(v =>
+      setVisits((prev) =>
+        prev.map((v) =>
           v.id === editingVisit.id
             ? { ...v, ...data, lastModified: new Date().toISOString() }
             : v
         )
       );
     } else {
-      setVisits(prev => [
+      setVisits((prev) => [
         ...prev,
         {
           ...data,
@@ -75,14 +78,14 @@ const Home: React.FC = () => {
   };
 
   const toggleSelection = (id: number) => {
-    setVisits(prev =>
-      prev.map(v => v.id === id ? { ...v, isSelected: !v.isSelected } : v)
+    setVisits((prev) =>
+      prev.map((v) => (v.id === id ? { ...v, isSelected: !v.isSelected } : v))
     );
   };
 
   const concludeSelected = () => {
-    setVisits(prev =>
-      prev.map(v =>
+    setVisits((prev) =>
+      prev.map((v) =>
         v.isSelected && v.isPending
           ? { ...v, isPending: false, conclusionDate: new Date().toISOString() }
           : v
@@ -92,17 +95,15 @@ const Home: React.FC = () => {
 
   return (
     <div className={styles.container}>
-      <Header
-        pendingCount={visits.filter(v => v.isPending).length}
-        openModal={handleOpenAddModal}
-      />
-      <VisitList
-        visits={currentVisits} // Passar visitas da página atual
-        toggleSelection={toggleSelection}
-        openEditModal={handleOpenEditModal}
-      />
+<Header
+  pendingCount={visits.filter((v) => v.isPending).length}
+  openModal={handleOpenAddModal}
+  visits={currentVisits} // Passando as visitas da página atual
+  toggleSelection={toggleSelection}  // Passando a função com o tipo correto
+  openEditModal={handleOpenEditModal} // Passando a função com o tipo correto
+/>
       <Footer
-        hasPendingSelected={visits.some(v => v.isSelected && v.isPending)}
+        hasPendingSelected={visits.some((v) => v.isSelected && v.isPending)}
         concludeSelected={concludeSelected}
         currentPage={currentPage} // Página atual
         totalPages={Math.ceil(visits.length / itemsPerPage)} // Número total de páginas
