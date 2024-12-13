@@ -10,6 +10,9 @@ const Home: React.FC = () => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [editingVisit, setEditingVisit] = useState<any>(null);
 
+  const [currentPage, setCurrentPage] = useState(1); // Página atual
+  const itemsPerPage = 10; // Máximo de itens por página
+
   // Carregar as visitas do localStorage ao montar o componente
   useEffect(() => {
     const savedVisits = localStorage.getItem('visits');
@@ -24,6 +27,16 @@ const Home: React.FC = () => {
       localStorage.setItem('visits', JSON.stringify(visits));
     }
   }, [visits]);
+
+  // Calcular os índices de início e fim para paginação
+  const indexOfLastVisit = currentPage * itemsPerPage;
+  const indexOfFirstVisit = indexOfLastVisit - itemsPerPage;
+  const currentVisits = visits.slice(indexOfFirstVisit, indexOfLastVisit);
+
+  // Mudar a página
+  const handleChangePage = (event: React.ChangeEvent<unknown>, value: number) => {
+    setCurrentPage(value);
+  };
 
   const handleOpenAddModal = () => {
     setEditingVisit(null);
@@ -84,13 +97,16 @@ const Home: React.FC = () => {
         openModal={handleOpenAddModal}
       />
       <VisitList
-        visits={visits}
+        visits={currentVisits} // Passar visitas da página atual
         toggleSelection={toggleSelection}
         openEditModal={handleOpenEditModal}
       />
       <Footer
         hasPendingSelected={visits.some(v => v.isSelected && v.isPending)}
         concludeSelected={concludeSelected}
+        currentPage={currentPage} // Página atual
+        totalPages={Math.ceil(visits.length / itemsPerPage)} // Número total de páginas
+        onPageChange={handleChangePage} // Função para mudar a página
       />
       {isModalOpen && (
         <AddModal
