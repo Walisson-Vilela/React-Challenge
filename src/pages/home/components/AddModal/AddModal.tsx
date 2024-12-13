@@ -46,6 +46,7 @@ const AddModal: React.FC<CreateModalProps> = ({
     setValue,
     formState: { isValid, isSubmitting },
     reset,
+    getValues,
   } = useForm<AddressData>({
     mode: "onBlur",
     defaultValues: {
@@ -61,6 +62,7 @@ const AddModal: React.FC<CreateModalProps> = ({
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isNeighborhoodEditable, setIsNeighborhoodEditable] = useState(false);
   const [isAddressEditable, setIsAddressEditable] = useState(false);
+  const [isNumberEditable, setIsNumberEditable] = useState(false); // Novo estado para o campo número
 
   useEffect(() => {
     if (isOpen) {
@@ -80,10 +82,19 @@ const AddModal: React.FC<CreateModalProps> = ({
   }, [isOpen, initialData, reset]);
 
   const handleCEPChange = async (cep: string) => {
+    // Limpar os campos de bairro, logradouro, cidade e estado ao alterar o CEP
     setValue("cep", cep);
+    setValue("uf", "");
+    setValue("city", "");
+    setValue("neighborhood", "");
+    setValue("address", "");
+    setValue("number", "");
+
+    // Desabilitar os campos de bairro e logradouro
     setIsNeighborhoodEditable(false);
     setIsAddressEditable(false);
 
+    // Verificar se o CEP tem 8 caracteres
     if (cep.length === 8) {
       setIsLoading(true);
       try {
@@ -94,6 +105,8 @@ const AddModal: React.FC<CreateModalProps> = ({
         setValue("city", data.localidade || "");
         setValue("neighborhood", data.bairro || "");
         setValue("address", data.logradouro || "");
+
+        // Se o bairro ou logradouro não foram retornados, habilita os campos para edição
         setIsNeighborhoodEditable(!data.bairro);
         setIsAddressEditable(!data.logradouro);
       } catch (error) {
@@ -102,6 +115,9 @@ const AddModal: React.FC<CreateModalProps> = ({
         setIsLoading(false);
       }
     }
+
+    // Habilitar o campo número apenas se o CEP for preenchido
+    setIsNumberEditable(cep.length === 8);
   };
 
   const onSubmit = (data: AddressData) => {
@@ -153,7 +169,13 @@ const AddModal: React.FC<CreateModalProps> = ({
           name="number"
           control={control}
           render={({ field }) => (
-            <input {...field} type="number" id="number" placeholder="Digite o número" />
+            <input
+              {...field}
+              type="number"
+              id="number"
+              disabled={isLoading || !isNumberEditable}
+              placeholder="Digite o número"
+            />
           )}
         />
 
@@ -203,7 +225,7 @@ const AddModal: React.FC<CreateModalProps> = ({
           <PrimaryButton
             text="Salvar"
             onClick={handleSubmit(onSubmit)}
-            disabled={isLoading || !isValid || isSubmitting}
+            disabled={isLoading || !isValid || isSubmitting || !Object.values(getValues()).every(val => val !== '')}
           />
         </Box>
       </Box>

@@ -67,6 +67,7 @@ const VisitList: React.FC<VisitListProps> = ({
                 onChange={() => toggleSelection(visit.id)}
                 style={{ marginRight: "1rem" }}
                 color="primary"
+                disabled={!!visit.conclusionDate} // Desabilita se houver uma data de conclusão
               />
               <div className={styles.dataArea}>
                 <div className={styles.data}>
