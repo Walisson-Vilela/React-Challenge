@@ -8,16 +8,17 @@ interface HeaderProps {
   pendingCount: number;
   openModal: () => void;
   visits: any[];
-  toggleSelection: (id: number) => void;  // Corrigido para aceitar o parâmetro 'id'
-  openEditModal: (id: number) => void;    // Corrigido para aceitar o parâmetro 'id'
+  toggleSelection: (id: number) => void;
+  openEditModal: (id: number) => void;
+  setFilter: (filter: string) => void; // Adicionando a propriedade setFilter
 }
-
 const Header: React.FC<HeaderProps> = ({
   pendingCount,
   openModal,
   visits,
   toggleSelection,
   openEditModal,
+  setFilter, // Agora recebendo setFilter
 }) => {
   let counterColor = "blue";
   if (pendingCount >= 3 && pendingCount < 10) {
@@ -75,10 +76,12 @@ const Header: React.FC<HeaderProps> = ({
           </div>
         </div>
       </div>
+      {/* Passando setFilter para Navbar */}
       <Navbar
-        visits={visits} // Passar todas as visitas para o Navbar
+        visits={visits}
         toggleSelection={toggleSelection}
         openEditModal={openEditModal}
+        setFilter={setFilter} // Passando para o Navbar
       />
     </header>
   );

@@ -12,6 +12,7 @@ const Home: React.FC = () => {
 
   const [currentPage, setCurrentPage] = useState(1); // Página atual
   const itemsPerPage = 10; // Máximo de itens por página
+  const [filter, setFilter] = useState<string>("all"); // Estado para controlar o filtro
 
   // Carregar as visitas do localStorage ao montar o componente
   useEffect(() => {
@@ -31,7 +32,19 @@ const Home: React.FC = () => {
   // Calcular os índices de início e fim para paginação
   const indexOfLastVisit = currentPage * itemsPerPage;
   const indexOfFirstVisit = indexOfLastVisit - itemsPerPage;
-  const currentVisits = visits.slice(indexOfFirstVisit, indexOfLastVisit);
+
+  // Filtrando visitas com base no filtro selecionado
+  let filteredVisits = visits;
+  if (filter === "pending") {
+    filteredVisits = visits.filter((v) => v.isPending);
+  } else if (filter === "completed") {
+    filteredVisits = visits.filter((v) => !v.isPending);
+  }
+
+  const currentVisits = filteredVisits.slice(
+    indexOfFirstVisit,
+    indexOfLastVisit
+  );
 
   // Mudar a página
   const handleChangePage = (
@@ -93,35 +106,28 @@ const Home: React.FC = () => {
     );
   };
 
-  useEffect(() => {
-    const savedVisits = localStorage.getItem("visits");
-    if (savedVisits) {
-      setVisits(JSON.parse(savedVisits));
-    }
-  }, []);
-
   // Ordenando as visitas da mais recente para a mais antiga
-  const sortedVisits = visits.sort((a, b) => new Date(b.lastModified).getTime() - new Date(a.lastModified).getTime());
-
-// Agora, passa as visitas ordenadas para o componente de paginação
-const visitsPerPage = 10; // Defina quantas visitas você quer por página
-const currentPageVisits = sortedVisits.slice((currentPage - 1) * visitsPerPage, currentPage * visitsPerPage);
+  const sortedVisits = visits.sort(
+    (a, b) =>
+      new Date(b.lastModified).getTime() - new Date(a.lastModified).getTime()
+  );
 
   return (
     <div className={styles.container}>
       <Header
         pendingCount={visits.filter((v) => v.isPending).length}
         openModal={handleOpenAddModal}
-        visits={currentPageVisits} // Passando as visitas da página atual
-        toggleSelection={toggleSelection} // Passando a função com o tipo correto
-        openEditModal={handleOpenEditModal} // Passando a função com o tipo correto
+        visits={currentVisits} // Passando as visitas da página atual
+        toggleSelection={toggleSelection}
+        openEditModal={handleOpenEditModal}
+        setFilter={setFilter} // Passando setFilter para o Header
       />
       <Footer
         hasPendingSelected={visits.some((v) => v.isSelected && v.isPending)}
         concludeSelected={concludeSelected}
-        currentPage={currentPage} // Página atual
-        totalPages={Math.ceil(visits.length / itemsPerPage)} // Número total de páginas
-        onPageChange={handleChangePage} // Função para mudar a página
+        currentPage={currentPage}
+        totalPages={Math.ceil(filteredVisits.length / itemsPerPage)} // Número total de páginas com base no filtro
+        onPageChange={handleChangePage}
       />
       {isModalOpen && (
         <AddModal
