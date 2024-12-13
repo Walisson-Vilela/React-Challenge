@@ -1,4 +1,10 @@
 .navbar {
-    border-bottom: 1px #ccc solid;
     margin-top: 5rem;
+    display: flex;
+    flex-direction: row;
+}
+
+.rowButton {
+    background: none;
+    border: none;
 }
