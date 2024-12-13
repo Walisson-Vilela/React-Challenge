@@ -93,15 +93,29 @@ const Home: React.FC = () => {
     );
   };
 
+  useEffect(() => {
+    const savedVisits = localStorage.getItem("visits");
+    if (savedVisits) {
+      setVisits(JSON.parse(savedVisits));
+    }
+  }, []);
+
+  // Ordenando as visitas da mais recente para a mais antiga
+  const sortedVisits = visits.sort((a, b) => new Date(b.lastModified).getTime() - new Date(a.lastModified).getTime());
+
+// Agora, passa as visitas ordenadas para o componente de paginação
+const visitsPerPage = 10; // Defina quantas visitas você quer por página
+const currentPageVisits = sortedVisits.slice((currentPage - 1) * visitsPerPage, currentPage * visitsPerPage);
+
   return (
     <div className={styles.container}>
-<Header
-  pendingCount={visits.filter((v) => v.isPending).length}
-  openModal={handleOpenAddModal}
-  visits={currentVisits} // Passando as visitas da página atual
-  toggleSelection={toggleSelection}  // Passando a função com o tipo correto
-  openEditModal={handleOpenEditModal} // Passando a função com o tipo correto
-/>
+      <Header
+        pendingCount={visits.filter((v) => v.isPending).length}
+        openModal={handleOpenAddModal}
+        visits={currentPageVisits} // Passando as visitas da página atual
+        toggleSelection={toggleSelection} // Passando a função com o tipo correto
+        openEditModal={handleOpenEditModal} // Passando a função com o tipo correto
+      />
       <Footer
         hasPendingSelected={visits.some((v) => v.isSelected && v.isPending)}
         concludeSelected={concludeSelected}

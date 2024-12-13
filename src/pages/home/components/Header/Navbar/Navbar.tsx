@@ -75,6 +75,7 @@ const Navbar: React.FC<NavbarProps> = ({
               visits={visits} // Passar todas as visitas
               toggleSelection={toggleSelection}
               openEditModal={openEditModal}
+              visitsPerPage={10} // Defina aqui o número de visitas por página
             />
           </TabPanel>
           <TabPanel value={value} index={1}>
@@ -82,6 +83,7 @@ const Navbar: React.FC<NavbarProps> = ({
               visits={pendingVisits} // Passar apenas visitas pendentes
               toggleSelection={toggleSelection}
               openEditModal={openEditModal}
+              visitsPerPage={10} // Defina aqui o número de visitas por página
             />
           </TabPanel>
           <TabPanel value={value} index={2}>
@@ -89,6 +91,7 @@ const Navbar: React.FC<NavbarProps> = ({
               visits={completedVisits} // Passar apenas visitas concluídas
               toggleSelection={toggleSelection}
               openEditModal={openEditModal}
+              visitsPerPage={10} // Defina aqui o número de visitas por página
             />
           </TabPanel>
         </Box>

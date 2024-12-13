@@ -1,11 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import PrimaryButton from "../../../../components/PrimaryButton/PrimaryButton";
+import { Checkbox } from "@mui/material";
 import EditIcon from "../../../../images/edit.svg";
 import EditIconDisabled from "../../../../images/editDisabled.svg";
 import styles from "./visitList.module.css";
-import { Checkbox } from "@mui/material";
 
 interface Visit {
   id: number;
@@ -25,15 +24,12 @@ interface VisitListProps {
   visits: Visit[];
   toggleSelection: (id: number) => void;
   openEditModal: (id: number) => void;
+  visitsPerPage: number; // Quantidade de visitas por página
 }
 
-// Função para formatar a data no formato desejado
 const formatDate = (dateString: string | undefined) => {
   if (!dateString) return "";
-
   const date = new Date(dateString);
-
-  // Formatar a data e hora no formato: Ter. 28/08/2023 - 08:00
   return format(date, "EEE dd/MM/yyyy - HH:mm", { locale: ptBR });
 };
 
@@ -41,10 +37,32 @@ const VisitList: React.FC<VisitListProps> = ({
   visits,
   toggleSelection,
   openEditModal,
+  visitsPerPage,
 }) => {
+  // Ordenar todas as visitas para mostrar as mais recentes primeiro
+  const sortedVisits = [...visits].sort((a, b) => {
+    const dateA = new Date(a.lastModified).getTime();
+    const dateB = new Date(b.lastModified).getTime();
+    return dateB - dateA; // Ordenação do mais recente para o mais antigo
+  });
+
+  // Paginação
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const totalPages = Math.ceil(sortedVisits.length / visitsPerPage);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  // Visitas a serem exibidas na página atual
+  const startIndex = (currentPage - 1) * visitsPerPage;
+  const endIndex = startIndex + visitsPerPage;
+  const visitsToDisplay = sortedVisits.slice(startIndex, endIndex);
+
   return (
     <section className={styles.container}>
-      {visits.map((visit) => (
+      {visitsToDisplay.map((visit) => (
         <div key={visit.id} className={styles.cardDisplay}>
           <div
             className={styles.statusBar}
@@ -83,7 +101,7 @@ const VisitList: React.FC<VisitListProps> = ({
                       <strong>Logradouro:</strong> {visit.address},
                     </p>
                     <p>
-                      <strong>Número:</strong> {visit.number} -
+                      <strong>Número:</strong> {visit.number} - 
                     </p>
                     <p>
                       <strong>CEP:</strong> {visit.cep}
