@@ -70,7 +70,12 @@ const Home: React.FC = () => {
       setVisits((prev) =>
         prev.map((v) =>
           v.id === editingVisit.id
-            ? { ...v, ...data, lastModified: new Date().toISOString() }
+            ? { 
+                ...v, 
+                ...data, 
+                lastModified: new Date().toISOString(), 
+                conclusionDate: v.conclusionDate || null // Certifique-se de que a data de conclusão não seja alterada
+              }
             : v
         )
       );
@@ -83,9 +88,20 @@ const Home: React.FC = () => {
           isPending: true,
           isSelected: false,
           lastModified: new Date().toISOString(),
+          conclusionDate: null, // Inicia com conclusão nula
         },
       ]);
     }
+  
+    // Ordenando as visitas sempre que houver uma alteração
+    setVisits((prev) => {
+      return prev.sort((a, b) => {
+        const dateA = new Date(a.lastModified).getTime();
+        const dateB = new Date(b.lastModified).getTime();
+        return dateB - dateA; // Ordenação do mais recente para o mais antigo
+      });
+    });
+  
     setEditingVisit(null);
     setModalOpen(false);
   };
@@ -105,12 +121,6 @@ const Home: React.FC = () => {
       )
     );
   };
-
-  // Ordenando as visitas da mais recente para a mais antiga
-  const sortedVisits = visits.sort(
-    (a, b) =>
-      new Date(b.lastModified).getTime() - new Date(a.lastModified).getTime()
-  );
 
   return (
     <div className={styles.container}>

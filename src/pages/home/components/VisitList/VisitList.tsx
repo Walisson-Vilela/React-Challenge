@@ -49,12 +49,6 @@ const VisitList: React.FC<VisitListProps> = ({
   // Paginação
   const [currentPage, setCurrentPage] = useState(1);
 
-  const totalPages = Math.ceil(sortedVisits.length / visitsPerPage);
-
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
-
   // Visitas a serem exibidas na página atual
   const startIndex = (currentPage - 1) * visitsPerPage;
   const endIndex = startIndex + visitsPerPage;
