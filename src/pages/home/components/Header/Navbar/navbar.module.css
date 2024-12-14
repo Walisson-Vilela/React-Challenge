@@ -1,11 +1,17 @@
 .navbar {
-    margin-top: 5rem;
-    display: flex;
-    flex-direction: row;
+  margin-top: 5rem;
+  display: flex;
+  flex-direction: row;
 }
 
 .rowButton {
-    /* background: none;
-    border: none; */
-    cursor: pointer;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.rowButton.selected {
+  background: #f0f0f0;
+  border: 1px #1e477e solid;
+  border-radius: 4px;
+  padding: 0.1rem;
 }

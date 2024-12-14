@@ -56,11 +56,6 @@ const VisitList: React.FC<VisitListProps> = ({
   const endIndex = startIndex + visitsPerPage;
   const visitsToDisplay = sortedVisits.slice(startIndex, endIndex);
 
-  // Alterar a página
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
-
   return (
     <section className={styles.container}>
       {visitsToDisplay.map((visit) => (

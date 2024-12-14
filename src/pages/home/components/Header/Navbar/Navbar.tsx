@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
@@ -14,7 +14,7 @@ interface NavbarProps {
   openEditModal: (id: number) => void;
   setFilter: (filter: string) => void;
   sortOrder: "asc" | "desc";
-  handleSort: (order: "asc" | "desc") => void;
+  handleSort: () => void;
 }
 
 const a11yProps = (index: number) => ({
@@ -30,7 +30,8 @@ const Navbar: React.FC<NavbarProps> = ({
   sortOrder,
   handleSort,
 }) => {
-  const [value, setValue] = React.useState<number>(0);
+  const [value, setValue] = useState<number>(0);
+  const [selectedButton, setSelectedButton] = useState<string | null>(null); // Estado para rastrear o botão selecionado
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -41,6 +42,11 @@ const Navbar: React.FC<NavbarProps> = ({
     } else {
       setFilter("completed");
     }
+  };
+
+  const handleButtonClick = (order: "asc" | "desc") => {
+    handleSort();
+    setSelectedButton(order);
   };
 
   return (
@@ -61,16 +67,16 @@ const Navbar: React.FC<NavbarProps> = ({
             <Tab label="Pendentes" {...a11yProps(1)} />
             <Tab label="Concluídas" {...a11yProps(2)} />
           </Tabs>
-          <div style={{ gap: ".4rem", display: "flex" }}>
+          <div style={{ gap: ".6rem", display: "flex" }}>
             <button
-              className={styles.rowButton}
-              onClick={() => handleSort("asc")}
+              className={`${styles.rowButton} ${selectedButton === "asc" ? styles.selected : ""}`}
+              onClick={() => handleButtonClick("asc")} // Chamada com argumento
             >
               <img src={NorthRowIcon} alt="Ordenar para cima" />
             </button>
             <button
-              className={styles.rowButton}
-              onClick={() => handleSort("desc")}
+              className={`${styles.rowButton} ${selectedButton === "desc" ? styles.selected : ""}`}
+              onClick={() => handleButtonClick("desc")} // Chamada com argumento
             >
               <img src={SouthRowIcon} alt="Ordenar para baixo" />
             </button>

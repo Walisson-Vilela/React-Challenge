@@ -20,7 +20,16 @@ const PaginationRounded: React.FC<PaginationProps> = ({
         page={currentPage}
         onChange={onPageChange}
         shape="rounded"
-        color="primary"
+        sx={{
+          "& .MuiPaginationItem-page.Mui-selected": {
+            background: "linear-gradient(145deg, var(--primaryColor), var(--primaryColor))",
+            color: "#fff",
+          },
+          "& .MuiPaginationItem-page:hover": {
+            background: "linear-gradient(145deg, var(--hoverColor), var(--hoverColor))",
+            color: "#fff",
+          },
+        }}
       />
     </Stack>
   );

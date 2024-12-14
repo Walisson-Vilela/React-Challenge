@@ -28,15 +28,6 @@
   --textColor: #1e477e;
   --hoverColor: #1e477e;
 
-  /* Tema Escuro */
-  --darkPrimaryColor: #ffffff;
-  --darkSecondaryColor: #ffba08;
-  --darkBackgroundColor: #333333;
-  --darkTextColor: rgba(255, 255, 255, 0.87);
-  --darkBorderColor: #333333;
-  --darkButtonBackground: #414141;
-  --darkHoverColor: rgba(255, 141, 1, 1);
-
   /* Fontes e sombras */
   --fontFamily: "CustomFont", sans-serif;
   --boxShadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -79,16 +70,22 @@ label {
   margin-bottom: -0.5rem;
 }
 
+::-webkit-scrollbar-track {
+  background: #e8edf7;
+  cursor: pointer;
+}
 
-/* Tema Escuro */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --primaryColor: var(--darkPrimaryColor);
-    --secondaryColor: var(--darkSecondaryColor);
-    --backgroundColor: var(--darkBackgroundColor);
-    --textColor: var(--darkTextColor);
-    --borderColor: var(--darkBorderColor);
-    --buttonBackground: var(--darkButtonBackground);
-    --hoverColor: var(--darkHoverColor);
-  }
+::-webkit-scrollbar-thumb {
+  background: var(--primaryColor);
+  cursor: move;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--hoverColor);
+  cursor: move;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 12px;
 }
