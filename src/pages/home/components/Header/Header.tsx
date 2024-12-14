@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import AddButton from "../../../../components/AddButton/AddButton";
 import Logo from "../../../../images/logo-mundo-wap.jpg";
 import styles from "./header.module.css";
@@ -10,16 +10,24 @@ interface HeaderProps {
   visits: any[];
   toggleSelection: (id: number) => void;
   openEditModal: (id: number) => void;
-  setFilter: (filter: string) => void; // Adicionando a propriedade setFilter
+  setFilter: (filter: string) => void;
 }
+
 const Header: React.FC<HeaderProps> = ({
   pendingCount,
   openModal,
   visits,
   toggleSelection,
   openEditModal,
-  setFilter, // Agora recebendo setFilter
+  setFilter,
 }) => {
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+
+  const handleSort = (order: "asc" | "desc") => {
+    console.log("ordenou")
+    setSortOrder(order);
+  };
+
   let counterColor = "blue";
   if (pendingCount >= 3 && pendingCount < 10) {
     counterColor = "green";
@@ -33,9 +41,7 @@ const Header: React.FC<HeaderProps> = ({
         <div className={styles.companyName}>
           <img src={Logo} className={styles.logo} />
           <h1 style={{ fontSize: "2rem", alignItems: "center" }}>
-            <span
-              style={{ fontFamily: "LogoFont", color: "var(--primaryColor)" }}
-            >
+            <span style={{ fontFamily: "LogoFont", color: "var(--primaryColor)" }}>
               agendamentos
             </span>
             <span
@@ -76,12 +82,14 @@ const Header: React.FC<HeaderProps> = ({
           </div>
         </div>
       </div>
-      {/* Passando setFilter para Navbar */}
+      {/* Passando setFilter e sortOrder para o Navbar */}
       <Navbar
         visits={visits}
         toggleSelection={toggleSelection}
         openEditModal={openEditModal}
-        setFilter={setFilter} // Passando para o Navbar
+        setFilter={setFilter}
+        sortOrder={sortOrder}
+        handleSort={handleSort} // Passando a função handleSort para Navbar
       />
     </header>
   );

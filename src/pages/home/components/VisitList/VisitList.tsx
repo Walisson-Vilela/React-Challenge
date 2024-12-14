@@ -25,6 +25,7 @@ interface VisitListProps {
   toggleSelection: (id: number) => void;
   openEditModal: (id: number) => void;
   visitsPerPage: number; // Quantidade de visitas por página
+  sortOrder: "asc" | "desc"; // A ordem de classificação
 }
 
 const formatDate = (dateString: string | undefined) => {
@@ -38,12 +39,13 @@ const VisitList: React.FC<VisitListProps> = ({
   toggleSelection,
   openEditModal,
   visitsPerPage,
+  sortOrder,
 }) => {
-  // Ordenar todas as visitas para mostrar as mais recentes primeiro
+  // Ordenar todas as visitas antes de aplicar a paginação
   const sortedVisits = [...visits].sort((a, b) => {
     const dateA = new Date(a.lastModified).getTime();
     const dateB = new Date(b.lastModified).getTime();
-    return dateB - dateA; // Ordenação do mais recente para o mais antigo
+    return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
   });
 
   // Paginação
@@ -53,6 +55,11 @@ const VisitList: React.FC<VisitListProps> = ({
   const startIndex = (currentPage - 1) * visitsPerPage;
   const endIndex = startIndex + visitsPerPage;
   const visitsToDisplay = sortedVisits.slice(startIndex, endIndex);
+
+  // Alterar a página
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
 
   return (
     <section className={styles.container}>
@@ -95,7 +102,7 @@ const VisitList: React.FC<VisitListProps> = ({
                       <strong>Logradouro:</strong> {visit.address},
                     </p>
                     <p>
-                      <strong>Número:</strong> {visit.number} - 
+                      <strong>Número:</strong> {visit.number} -
                     </p>
                     <p>
                       <strong>CEP:</strong> {visit.cep}

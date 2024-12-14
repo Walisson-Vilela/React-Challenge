@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Header from "./components/Header/Header";
 import Footer from "./components/Footer/Footer";
-import VisitList from "./components/VisitList/VisitList";
 import AddModal from "./components/AddModal/AddModal";
 import styles from "./home.module.css";
 
