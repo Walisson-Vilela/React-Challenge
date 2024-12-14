@@ -14,7 +14,7 @@ interface NavbarProps {
   openEditModal: (id: number) => void;
   setFilter: (filter: string) => void;
   sortOrder: "asc" | "desc";
-  handleSort: () => void;
+  handleSort: (order: "asc" | "desc") => void;
 }
 
 const a11yProps = (index: number) => ({
@@ -32,7 +32,6 @@ const Navbar: React.FC<NavbarProps> = ({
 }) => {
   const [value, setValue] = React.useState<number>(0);
 
-  // Alterar a página e definir o filtro
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
     if (newValue === 0) {
@@ -65,13 +64,13 @@ const Navbar: React.FC<NavbarProps> = ({
           <div style={{ gap: ".4rem", display: "flex" }}>
             <button
               className={styles.rowButton}
-              onClick={() => handleSort()}
+              onClick={() => handleSort("asc")}
             >
               <img src={NorthRowIcon} alt="Ordenar para cima" />
             </button>
             <button
               className={styles.rowButton}
-              onClick={() => handleSort()}
+              onClick={() => handleSort("desc")}
             >
               <img src={SouthRowIcon} alt="Ordenar para baixo" />
             </button>
@@ -88,7 +87,7 @@ const Navbar: React.FC<NavbarProps> = ({
         </TabPanel>
         <TabPanel value={value} index={1}>
           <VisitList
-            visits={visits.filter(v => v.isPending)}
+            visits={visits.filter((v) => v.isPending)}
             toggleSelection={toggleSelection}
             openEditModal={openEditModal}
             visitsPerPage={10}
@@ -97,7 +96,7 @@ const Navbar: React.FC<NavbarProps> = ({
         </TabPanel>
         <TabPanel value={value} index={2}>
           <VisitList
-            visits={visits.filter(v => !v.isPending)}
+            visits={visits.filter((v) => !v.isPending)}
             toggleSelection={toggleSelection}
             openEditModal={openEditModal}
             visitsPerPage={10}

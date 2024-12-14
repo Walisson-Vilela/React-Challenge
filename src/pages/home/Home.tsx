@@ -11,7 +11,7 @@ const Home: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const [filter, setFilter] = useState<string>("all");
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc"); // Ordenação padrão
 
   useEffect(() => {
     const savedVisits = localStorage.getItem("visits");
@@ -26,11 +26,21 @@ const Home: React.FC = () => {
     }
   }, [visits]);
 
+  // Ordenar visitas ao carregar
+  useEffect(() => {
+    setVisits((prev) => {
+      return [...prev].sort((a, b) => {
+        const dateA = new Date(a.lastModified).getTime();
+        const dateB = new Date(b.lastModified).getTime();
+        return dateB - dateA; // Ordenação padrão do mais recente para o mais antigo
+      });
+    });
+  }, []);
+
   const handleSort = () => {
     setSortOrder(sortOrder === "asc" ? "desc" : "asc");
   };
 
-  // Ordenar e filtrar visitas antes de aplicar a paginação
   const filteredVisits = visits.filter((visit) => {
     if (filter === "pending") return visit.isPending;
     if (filter === "completed") return !visit.isPending;
