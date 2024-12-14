@@ -8,12 +8,11 @@ const Home: React.FC = () => {
   const [visits, setVisits] = useState<any[]>([]);
   const [isModalOpen, setModalOpen] = useState(false);
   const [editingVisit, setEditingVisit] = useState<any>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+  const [filter, setFilter] = useState<string>("all");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
-  const [currentPage, setCurrentPage] = useState(1); // Página atual
-  const itemsPerPage = 10; // Máximo de itens por página
-  const [filter, setFilter] = useState<string>("all"); // Estado para controlar o filtro
-
-  // Carregar as visitas do localStorage ao montar o componente
   useEffect(() => {
     const savedVisits = localStorage.getItem("visits");
     if (savedVisits) {
@@ -21,35 +20,35 @@ const Home: React.FC = () => {
     }
   }, []);
 
-  // Salvar visitas no localStorage sempre que a lista for alterada
   useEffect(() => {
     if (visits.length > 0) {
       localStorage.setItem("visits", JSON.stringify(visits));
     }
   }, [visits]);
 
-  // Calcular os índices de início e fim para paginação
-  const indexOfLastVisit = currentPage * itemsPerPage;
-  const indexOfFirstVisit = indexOfLastVisit - itemsPerPage;
+  const handleSort = () => {
+    setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+  };
 
-  // Filtrando visitas com base no filtro selecionado
-  let filteredVisits = visits;
-  if (filter === "pending") {
-    filteredVisits = visits.filter((v) => v.isPending);
-  } else if (filter === "completed") {
-    filteredVisits = visits.filter((v) => !v.isPending);
-  }
+  // Ordenar e filtrar visitas antes de aplicar a paginação
+  const filteredVisits = visits.filter((visit) => {
+    if (filter === "pending") return visit.isPending;
+    if (filter === "completed") return !visit.isPending;
+    return true;
+  });
 
-  const currentVisits = filteredVisits.slice(
-    indexOfFirstVisit,
-    indexOfLastVisit
+  const sortedVisits = filteredVisits.sort((a, b) => {
+    const dateA = new Date(a.lastModified).getTime();
+    const dateB = new Date(b.lastModified).getTime();
+    return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
+  });
+
+  const currentVisits = sortedVisits.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
   );
 
-  // Mudar a página
-  const handleChangePage = (
-    event: React.ChangeEvent<unknown>,
-    value: number
-  ) => {
+  const handleChangePage = (event: React.ChangeEvent<unknown>, value: number) => {
     setCurrentPage(value);
   };
 
@@ -69,12 +68,7 @@ const Home: React.FC = () => {
       setVisits((prev) =>
         prev.map((v) =>
           v.id === editingVisit.id
-            ? { 
-                ...v, 
-                ...data, 
-                lastModified: new Date().toISOString(), 
-                conclusionDate: v.conclusionDate || null // Certifique-se de que a data de conclusão não seja alterada
-              }
+            ? { ...v, ...data, lastModified: new Date().toISOString(), conclusionDate: v.conclusionDate || null }
             : v
         )
       );
@@ -87,20 +81,10 @@ const Home: React.FC = () => {
           isPending: true,
           isSelected: false,
           lastModified: new Date().toISOString(),
-          conclusionDate: null, // Inicia com conclusão nula
+          conclusionDate: null,
         },
       ]);
     }
-  
-    // Ordenando as visitas sempre que houver uma alteração
-    setVisits((prev) => {
-      return prev.sort((a, b) => {
-        const dateA = new Date(a.lastModified).getTime();
-        const dateB = new Date(b.lastModified).getTime();
-        return dateB - dateA; // Ordenação do mais recente para o mais antigo
-      });
-    });
-  
     setEditingVisit(null);
     setModalOpen(false);
   };
@@ -114,9 +98,7 @@ const Home: React.FC = () => {
   const concludeSelected = () => {
     setVisits((prev) =>
       prev.map((v) =>
-        v.isSelected && v.isPending
-          ? { ...v, isPending: false, conclusionDate: new Date().toISOString() }
-          : v
+        v.isSelected && v.isPending ? { ...v, isPending: false, conclusionDate: new Date().toISOString() } : v
       )
     );
   };
@@ -126,16 +108,18 @@ const Home: React.FC = () => {
       <Header
         pendingCount={visits.filter((v) => v.isPending).length}
         openModal={handleOpenAddModal}
-        visits={currentVisits} // Passando as visitas da página atual
+        visits={currentVisits}
         toggleSelection={toggleSelection}
         openEditModal={handleOpenEditModal}
-        setFilter={setFilter} // Passando setFilter para o Header
+        setFilter={setFilter}
+        sortOrder={sortOrder}
+        handleSort={handleSort}
       />
       <Footer
         hasPendingSelected={visits.some((v) => v.isSelected && v.isPending)}
         concludeSelected={concludeSelected}
         currentPage={currentPage}
-        totalPages={Math.ceil(filteredVisits.length / itemsPerPage)} // Número total de páginas com base no filtro
+        totalPages={Math.ceil(filteredVisits.length / itemsPerPage)}
         onPageChange={handleChangePage}
       />
       {isModalOpen && (

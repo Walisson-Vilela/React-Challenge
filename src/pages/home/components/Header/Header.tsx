@@ -11,6 +11,8 @@ interface HeaderProps {
   toggleSelection: (id: number) => void;
   openEditModal: (id: number) => void;
   setFilter: (filter: string) => void;
+  sortOrder: "asc" | "desc";
+  handleSort: () => void;
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -20,14 +22,9 @@ const Header: React.FC<HeaderProps> = ({
   toggleSelection,
   openEditModal,
   setFilter,
+  sortOrder,
+  handleSort,
 }) => {
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
-
-  const handleSort = (order: "asc" | "desc") => {
-    console.log("ordenou")
-    setSortOrder(order);
-  };
-
   let counterColor = "blue";
   if (pendingCount >= 3 && pendingCount < 10) {
     counterColor = "green";
@@ -82,14 +79,13 @@ const Header: React.FC<HeaderProps> = ({
           </div>
         </div>
       </div>
-      {/* Passando setFilter e sortOrder para o Navbar */}
       <Navbar
         visits={visits}
         toggleSelection={toggleSelection}
         openEditModal={openEditModal}
         setFilter={setFilter}
         sortOrder={sortOrder}
-        handleSort={handleSort} // Passando a função handleSort para Navbar
+        handleSort={handleSort}
       />
     </header>
   );
