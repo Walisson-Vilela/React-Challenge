@@ -25,7 +25,6 @@ const Footer: React.FC<FooterProps> = ({
         onClick={concludeSelected}
         disabled={!hasPendingSelected}
       />
-      {/* A paginação foi movida para o Footer */}
       <PaginationRounded
         currentPage={currentPage}
         totalPages={totalPages}
