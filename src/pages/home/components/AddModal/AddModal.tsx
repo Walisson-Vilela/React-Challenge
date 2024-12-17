@@ -44,12 +44,11 @@ const AddModal: React.FC<CreateModalProps> = ({
     control,
     handleSubmit,
     setValue,
-    formState: { isValid, isSubmitting, errors, touchedFields },
+    formState: { isValid, isSubmitting, errors },
     reset,
-    getValues,
-    trigger, // Adicionando trigger para revalidar os campos manualmente
+    trigger,
   } = useForm<AddressData>({
-    mode: "onChange", // Validação enquanto o usuário digita
+    mode: "onChange",
     defaultValues: {
       cep: "",
       uf: "",
@@ -83,42 +82,50 @@ const AddModal: React.FC<CreateModalProps> = ({
   }, [isOpen, initialData, reset]);
 
   const handleCEPChange = async (cep: string) => {
-    setValue("cep", cep);
+    const cleanedCEP = cep.replace(/\D/g, ""); // Remove caracteres não numéricos
+    const maskedCEP = cleanedCEP.replace(/^(\d{5})(\d)/, "$1-$2"); // Aplica máscara XXXXX-XXX
+    
+    setValue("cep", maskedCEP); // Atualiza o valor com a máscara
+  
     setValue("uf", "");
     setValue("city", "");
     setValue("neighborhood", "");
     setValue("address", "");
     setValue("number", "");
-
+  
     setIsNeighborhoodEditable(false);
     setIsAddressEditable(false);
-
-    if (cep.length === 8) {
+    setIsNumberEditable(false);
+  
+    if (cleanedCEP.length === 8) {
       setIsLoading(true);
       try {
-        const { data } = await axios.get(
-          `https://viacep.com.br/ws/${cep}/json/`
-        );
+        const { data } = await axios.get(`https://viacep.com.br/ws/${cleanedCEP}/json/`);
+  
+        if (data.erro) {
+          alert("CEP não encontrado. Verifique o número digitado.");
+          return;
+        }
+  
         setValue("uf", data.uf || "");
         setValue("city", data.localidade || "");
         setValue("neighborhood", data.bairro || "");
         setValue("address", data.logradouro || "");
-
+  
         setIsNeighborhoodEditable(!data.bairro);
         setIsAddressEditable(!data.logradouro);
+        setIsNumberEditable(true);
       } catch (error) {
-        console.error("Error fetching CEP", error);
+        console.error("Erro ao buscar CEP:", error);
+        alert("Erro ao buscar o CEP. Verifique sua conexão com a internet.");
       } finally {
         setIsLoading(false);
       }
     }
-
-    setIsNumberEditable(cep.length === 8);
-    // Revalidando após a alteração do CEP
     trigger("cep");
     trigger("number");
   };
-
+  
   const onSubmit = (data: AddressData) => {
     onSave(data);
     onClose();
@@ -129,21 +136,12 @@ const AddModal: React.FC<CreateModalProps> = ({
       <Box sx={modalStyle}>
         <h2>{initialData ? "Editar visita" : "Criar nova visita"}</h2>
 
-        {/* CEP (obrigatório) */}
-        <label htmlFor="cep">CEP
-
-        {errors.number && (
-            <span
-              style={{ color: "red", fontSize: "0.6rem", marginLeft: '1rem' }}
-            >
-              {errors.number.message}
-            </span>
-          )}
-        </label>
+        {/* CEP */}
+        <label htmlFor="cep">CEP</label>
         <Controller
           name="cep"
           control={control}
-          rules={{ required: "CEP é obrigatório" }} // Tornando o campo obrigatório
+          rules={{ required: "CEP é obrigatório" }}
           render={({ field }) => (
             <input
               {...field}
@@ -155,6 +153,8 @@ const AddModal: React.FC<CreateModalProps> = ({
             />
           )}
         />
+        {errors.cep && <span style={{ color: "red", fontSize: '0.6rem', marginTop: '-14px' }}>{errors.cep.message}</span>}
+
         {/* Logradouro */}
         <label htmlFor="address">Logradouro</label>
         <Controller
@@ -171,31 +171,25 @@ const AddModal: React.FC<CreateModalProps> = ({
           )}
         />
 
-        {/* Número (obrigatório, se vazio ao tentar salvar) */}
-        <label htmlFor="number">
-          Número
-          {errors.number && (
-            <span
-              style={{ color: "red", fontSize: "0.6rem", marginLeft: '1rem' }}
-            >
-              {errors.number.message}
-            </span>
-          )}
-        </label>
+        {/* Número */}
+        <label htmlFor="number">Número</label>
         <Controller
           name="number"
           control={control}
-          rules={{ required: "    Número é obrigatório" }} // Adicionando a validação do campo número
+          rules={{ required: "Número é obrigatório" }}
           render={({ field }) => (
             <input
               {...field}
-              type="number"
+              type="text"
               id="number"
               disabled={isLoading || !isNumberEditable}
               placeholder="Digite o número"
             />
           )}
         />
+        {errors.number && (
+          <span style={{ color: "red", fontSize: '0.6rem', marginTop: '-14px' }}>{errors.number.message}</span>
+        )}
 
         {/* Bairro */}
         <label htmlFor="neighborhood">Bairro</label>
@@ -219,14 +213,7 @@ const AddModal: React.FC<CreateModalProps> = ({
           name="city"
           control={control}
           render={({ field }) => (
-            <input
-              {...field}
-              type="text"
-              id="city"
-              readOnly
-              disabled={isLoading || !isAddressEditable}
-              placeholder="Digite a cidade"
-            />
+            <input {...field} type="text" id="city" readOnly placeholder="Cidade" />
           )}
         />
 
@@ -236,33 +223,18 @@ const AddModal: React.FC<CreateModalProps> = ({
           name="uf"
           control={control}
           render={({ field }) => (
-            <input
-              {...field}
-              type="text"
-              id="uf"
-              readOnly
-              disabled={isLoading || !isAddressEditable}
-              placeholder="Digite o estado"
-            />
+            <input {...field} type="text" id="uf" readOnly placeholder="UF" />
           )}
         />
 
         <Box display="flex" justifyContent="space-between">
-          {/* Botão Cancelar */}
           <Button variant="outlined" onClick={onClose}>
             Cancelar
           </Button>
-
-          {/* Botão Salvar */}
           <PrimaryButton
             text="Salvar"
             onClick={handleSubmit(onSubmit)}
-            disabled={
-              isLoading ||
-              !isValid ||
-              isSubmitting ||
-              Object.keys(errors).length > 0
-            }
+            disabled={isLoading || !isValid || isSubmitting}
           />
         </Box>
       </Box>
