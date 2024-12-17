@@ -37,7 +37,7 @@ const Header: React.FC<HeaderProps> = ({
       <div className={styles.container}>
         <div className={styles.companyName}>
           <img src={Logo} className={styles.logo} />
-          <h1 style={{ fontSize: "2rem", alignItems: "center" }}>
+          <h1 style={{ fontSize: "100%", alignItems: "center" }}>
             <span style={{ fontFamily: "LogoFont", color: "var(--primaryColor)" }}>
               agendamentos
             </span>
@@ -52,7 +52,7 @@ const Header: React.FC<HeaderProps> = ({
             </span>
             <span
               style={{
-                fontSize: "1.8rem",
+                fontSize: "100%",
                 fontWeight: "bold",
                 color: "var(--secondaryColor)",
               }}
