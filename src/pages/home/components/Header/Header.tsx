@@ -27,7 +27,7 @@ const Header: React.FC<HeaderProps> = ({
 }) => {
   
   let counterColor = "blue";
-  if (pendingCount >= 3 && pendingCount < 10) {
+  if (pendingCount <= 3 ) {
     counterColor = "green";
   } else if (pendingCount >= 10) {
     counterColor = "red";

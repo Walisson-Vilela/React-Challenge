@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box, Button, Modal, CircularProgress } from "@mui/material";
+import { Box, Button, Modal } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import axios from "axios";
 import PrimaryButton from "../../../../components/PrimaryButton/PrimaryButton";

@@ -70,13 +70,13 @@ const Navbar: React.FC<NavbarProps> = ({
           <div style={{ gap: ".6rem", display: "flex" }}>
             <button
               className={`${styles.rowButton} ${selectedButton === "asc" ? styles.selected : ""}`}
-              onClick={() => handleButtonClick("asc")} // Chamada com argumento
+              onClick={() => handleButtonClick("asc")} 
             >
               <img src={NorthRowIcon} alt="Ordenar para cima" />
             </button>
             <button
               className={`${styles.rowButton} ${selectedButton === "desc" ? styles.selected : ""}`}
-              onClick={() => handleButtonClick("desc")} // Chamada com argumento
+              onClick={() => handleButtonClick("desc")} 
             >
               <img src={SouthRowIcon} alt="Ordenar para baixo" />
             </button>
